@@ -1,5 +1,4 @@
 # 1. تثبيت كافة المكتبات الأساسية والمتقدمة
-!pip install pyTelegramBotAPI demucs moviepy pillow yt-dlp openai-whisper setuptools-rust psutil
 
 import telebot
 import subprocess
