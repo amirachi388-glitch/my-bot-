@@ -9,7 +9,7 @@ import time
 import psutil
 import whisper
 from telebot import types
-from moviepy.editor import VideoFileClip, AudioFileClip
+from moviepy import VideoFileClip, AudioFileClip
 
 BOT_TOKEN = "8817595725:AAHJaK-hl87XPh51ToF_20oTIQ_nkzV2mgQ"
 ADMIN_ID = 8084323446  
