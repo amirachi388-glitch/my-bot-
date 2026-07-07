@@ -7,7 +7,7 @@ import queue
 import threading
 import time
 import psutil
-import whisper
+#import whisper
 from telebot import types
 from moviepy import VideoFileClip, AudioFileClip
 
