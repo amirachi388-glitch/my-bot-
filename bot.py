@@ -10,7 +10,7 @@ import psutil
 from telebot import types
 from moviepy import VideoFileClip, AudioFileClip
 
-BOT_TOKEN = "8817595725:AAHJaK-h187XPh51ToF_20oTIQ_nkzV2mgQ"
+BOT_TOKEN = "8817595725:AAGkTZCRji9zLUvtmcpwooT-7b9BUURZG5Q"
 ADMIN_ID = 8084323446
 
 bot = telebot.TeleBot(BOT_TOKEN)
