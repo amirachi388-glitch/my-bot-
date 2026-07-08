@@ -25,9 +25,6 @@ user_spam_counter = {}
 temp_banned_users = {}
 warning_emitted = {}
 
-print("Loading AI Whisper Model...")
-whisper_model = whisper.load_model("base")
-
 for file in [USERS_FILE, BANNED_FILE]:
     if not os.path.exists(file):
         with open(file, "w") as f: pass
@@ -57,13 +54,13 @@ LANGUAGES = {
         'spam_warn': "⚠️ يرجى إرسال ملف واحد في المرة لعدم الضغط على السيرفر، تم تجاهل الطلب الزائد تفادياً للحظر.",
         'spam_temp': "🚫 تم حظرك مؤقتاً لمدة 10 دقائق بسبب إرسال ملفات كثيرة بدافع التخريب. يرجى الانتظار.",
         'spam_perm': "❌ تم حظرك نهائياً من البوت لمخالفتك شروط الاستخدام والتخريب المستمر للسيرفر.",
-        'btn_video': "🎬 عزل فيديو / رابط", 'btn_audio': "🎵 عزل وتصفية صوت", 'btn_summary': "📝 تلخيص البودكاست", 'btn_trans': "🌍 ترجمة وطباعة نصوص", 'btn_search': "🔍 بحث داخل الفيديو",
+        'btn_video': "🎬 عزل فيديو / رابط", 'btn_audio': "🎵 عزل وتصفية صوت", 'btn_summary': "📝 تلخيص البودكاست (مغلق)", 'btn_trans': "🌍 ترجمة وطباعة نصوص (مغلق)", 'btn_search': "🔍 بحث داخل الفيديو (مغلق)",
         'choose_service': "الرجاء تحديد نوع الخدمة أولاً بالضغط على الأزرار بالأسفل 👇",
         'send_video': "أرسل مقطع فيديو (MP4) أو رابط تيك توك/ريلز لعزل الموسيقى منه تلقائياً.",
         'send_audio': "أرسل الآن ملف صوتي أو ريكورد لتنقيته وعزله من الضوضاء والموسيقى.",
-        'send_sum': "أرسل أي بودكاست أو محاضرة صوتية وسأقوم بتلخيصها لك بالذكاء الاصطناعي في نقاط.",
-        'send_trans': "أرسل فيديو أجنبي وسأقوم بترجمته وطباعة النصوص عليه بالعربية.",
-        'send_search': "أرسل فيديو ثم اكتب الكلمة التي تبحث عنها داخل محتواه الصوتي.",
+        'send_sum': "⚠️ عذراً، ميزة التلخيص غير متوفرة حالياً بصيانة السيرفر.",
+        'send_trans': "⚠️ عذراً، ميزة الترجمة غير متوفرة حالياً بصيانة السيرفر.",
+        'send_search': "⚠️ عذراً، ميزة البحث داخل الفيديو غير متوفرة حالياً.",
         'processing': "⏳ بدأ دورك! جاري معالجة طلبك عبر الذكاء الاصطناعي، يرجى الانتظار بقناة الطابور...",
         'success': "🚀 تمت المعالجة بنجاح! جاري رفع ملفك...",
         'txt_link': "📥 جاري استخراج وتحميل مقطع الفيديو من الرابط بأعلى جودة...",
@@ -71,9 +68,9 @@ LANGUAGES = {
         'txt_iso': "🎧 جاري عزل وعزل الموسيقى بالذكاء الاصطناعي (Demucs)...",
         'txt_merge': "🎬 جاري إعادة الدمج الصوتي وإنتاج الملف النظيف...",
         'txt_clean': "🎵 جاري عزل الموسيقى وتنقية الريكورد من الشوشة المحيطة...",
-        'txt_sum': "📝 جاري الاستماع للمقطع بالكامل وتحليله بالذكاء الاصطناعي للتلخيص...",
-        'txt_trans': "🌍 جاري ترجمة محتوى الفيديو وطباعة النصوص عليه...",
-        'txt_search': "📥 تم حفظ الملف الصوتي للفيديو بنجاح. أرسل الآن الكلمة التي تبحث عنها في الشات فوراً!"
+        'txt_sum': "📝 الخدمة متوقفة مؤقتاً...",
+        'txt_trans': "🌍 الخدمة متوقفة مؤقتاً...",
+        'txt_search': "📥 الخدمة متوقفة مؤقتاً..."
     },
     'en': {
         'welcome': "Welcome to the Ultimate AI Music Isolator Bot! 🚀\nPlease choose a service from the buttons below, then send your file or link.",
@@ -82,13 +79,13 @@ LANGUAGES = {
         'spam_warn': "⚠️ Please send one file at a time to avoid spamming the server.",
         'spam_temp': "🚫 You have been temporarily banned for 10 minutes due to spamming.",
         'spam_perm': "❌ You have been permanently banned for continuous spamming.",
-        'btn_video': "🎬 Isolate Video/Link", 'btn_audio': "🎵 Isolate/Clean Audio", 'btn_summary': "📝 Audio Summary", 'btn_trans': "🌍 Video Translator", 'btn_search': "🔍 In-Video Search",
+        'btn_video': "🎬 Isolate Video/Link", 'btn_audio': "🎵 Isolate/Clean Audio", 'btn_summary': "📝 Audio Summary (Closed)", 'btn_trans': "🌍 Video Translator (Closed)", 'btn_search': "🔍 In-Video Search (Closed)",
         'choose_service': "Please select a service from the buttons below 👇",
         'send_video': "Send a video clip (MP4) or a TikTok/Reels link to remove music automatically.",
         'send_audio': "Send an audio file or voice note to remove noise and isolate the vocals.",
-        'send_sum': "Send a long audio/podcast and I will summarize it into key points using AI.",
-        'send_trans': "Send a foreign video and I will hardcode Arabic subtitles onto it.",
-        'send_search': "Send a video and type the word you want to search inside its speech.",
+        'send_sum': "⚠️ Sorry, Summary service is currently unavailable.",
+        'send_trans': "⚠️ Sorry, Translator service is currently unavailable.",
+        'send_search': "⚠️ Sorry, In-Video Search is currently unavailable.",
         'processing': "⏳ Processing your request via advanced AI, please wait...",
         'success': "🚀 Processed successfully! Uploading your file...",
         'txt_link': "📥 Extracting and downloading video from link...",
@@ -96,9 +93,9 @@ LANGUAGES = {
         'txt_iso': "🎧 Isolating music using Demucs AI...",
         'txt_merge': "🎬 Remuxing audio and generating clean file...",
         'txt_clean': "🎵 Removing noise and music from voice note...",
-        'txt_sum': "📝 Transcribing and creating AI Summary...",
-        'txt_trans': "🌍 Translating video content and embedding text...",
-        'txt_search': "📥 Audio saved. Send the keyword to search inside speech!"
+        'txt_sum': "📝 Service unavailable...",
+        'txt_trans': "🌍 Service unavailable...",
+        'txt_search': "🔍 Service unavailable..."
     }
 }
 
@@ -119,9 +116,7 @@ def main_keyboard(lang):
     l = LANGUAGES.get(lang, LANGUAGES['ar'])
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
     markup.add(
-        types.KeyboardButton(l['btn_video']), types.KeyboardButton(l['btn_audio']),
-        types.KeyboardButton(l['btn_summary']), types.KeyboardButton(l['btn_trans']),
-        types.KeyboardButton(l['btn_search'])
+        types.KeyboardButton(l['btn_video']), types.KeyboardButton(l['btn_audio'])
     )
     return markup
 
@@ -259,13 +254,10 @@ def handle_text_menus(message):
         user_status[uid] = "audio"
         bot.reply_to(message, l['send_audio'])
     elif message.text in [LANGUAGES['ar']['btn_summary'], LANGUAGES['en']['btn_summary']]:
-        user_status[uid] = "summary"
         bot.reply_to(message, l['send_sum'])
     elif message.text in [LANGUAGES['ar']['btn_trans'], LANGUAGES['en']['btn_trans']]:
-        user_status[uid] = "translate"
         bot.reply_to(message, l['send_trans'])
     elif message.text in [LANGUAGES['ar']['btn_search'], LANGUAGES['en']['btn_search']]:
-        user_status[uid] = "search_init"
         bot.reply_to(message, l['send_search'])
         
     elif message.text.startswith("http://") or message.text.startswith("https://"):
@@ -273,20 +265,6 @@ def handle_text_menus(message):
         status_msg = bot.reply_to(message, l['processing'])
         file_name = f"link_{uid}.mp4"
         task_queue.put((uid, status_msg.message_id, message.text, "link_download", file_name, ""))
-    
-    elif user_status.get(uid) == "search_keyword":
-        vocals_path = f"audio_{uid}.mp3"
-        if os.path.exists(vocals_path):
-            result = whisper_model.transcribe(vocals_path)
-            found_timestamps = []
-            for segment in result['segments']:
-                if message.text.lower() in segment['text'].lower():
-                    m, s = divmod(int(segment['start']), 60)
-                    found_timestamps.append(f"⏱️ دقيقة {m:02d}:{s:02d} -> ({segment['text']})")
-            if found_timestamps: response = "✅ الأوقات:\n\n" + "\n".join(found_timestamps)
-            else: response = "❌ لم يتم العثور عليها."
-            bot.send_message(uid, response)
-        else: bot.send_message(uid, "❌ يرجى إرسال فيديو أولاً.")
 
 @bot.message_handler(content_types=['video', 'audio', 'voice'])
 def handle_incoming_media(message):
@@ -296,7 +274,7 @@ def handle_incoming_media(message):
     l = LANGUAGES[lang]
     mode = user_status.get(uid, None)
     
-    if not mode:
+    if not mode or mode in ["summary", "translate", "search_init", "search_keyword"]:
         bot.reply_to(message, l['choose_service'], reply_markup=main_keyboard(lang))
         return
 
@@ -311,10 +289,9 @@ def handle_incoming_media(message):
         file_name = f"voice_{uid}.ogg"
 
     q_size = task_queue.qsize()
-    status_msg = bot.reply_to(message, f"{l['processing']} (#{q_size + 1})")
+    status_msg = bot.reply_to(message, f"{l['processing']} (# {q_size + 1})")
     task_queue.put((uid, status_msg.message_id, file_id, mode, file_name, ""))
 
-# الدالة البرمجية أصبحت الآن قصيرة جداً ومحمية 100% من البتر والالتواء
 def execute_processing(chat_id, message_id, file_id, mode, file_name, extra_data):
     video_clip, audio_clip, final_clip = None, None, None
     lang = user_lang.get(chat_id, 'ar')
@@ -330,7 +307,7 @@ def execute_processing(chat_id, message_id, file_id, mode, file_name, extra_data
             downloaded_file = bot.download_file(file_info.file_path)
             with open(file_name, 'wb') as f: f.write(downloaded_file)
 
-        if mode in ["video", "translate"] and os.path.exists(file_name):
+        if mode == "video" and os.path.exists(file_name):
             video_clip = VideoFileClip(file_name)
             if video_clip.duration > 180:
                 bot.edit_message_text(l['txt_cut'], chat_id, message_id)
@@ -366,29 +343,6 @@ def execute_processing(chat_id, message_id, file_id, mode, file_name, extra_data
             if os.path.exists(vocals_path):
                 bot.edit_message_text(l['success'], chat_id, message_id)
                 with open(vocals_path, 'rb') as audio_file: bot.send_audio(chat_id, audio_file, reply_markup=main_keyboard(lang))
-
-        elif mode == "summary":
-            bot.edit_message_text(l['txt_sum'], chat_id, message_id)
-            result = whisper_model.transcribe(file_name)
-            text_content = result['text']
-            
-            summary_prompt = f"🎯 **ملخص المحاضرة بالذكاء الاصطناعي:**\n\n📄 النص: {text_content[:300]}...\n\n" \
-                             f"✨ النقاط:\n1️⃣ شرح الفكرة.\n2️⃣ المؤثرات.\n3️⃣ النتائج."
-            bot.send_message(chat_id, summary_prompt, reply_markup=main_keyboard(lang))
-
-        elif mode == "translate":
-            bot.edit_message_text(l['txt_trans'], chat_id, message_id)
-            result = whisper_model.transcribe(file_name)
-            translated_text = result['text']
-            
-            bot.send_message(chat_id, f"🌍 **الترجمة:**\n\n`{translated_text}`")
-            with open(file_name, 'rb') as f: bot.send_video(chat_id, f, reply_markup=main_keyboard(lang))
-
-        elif mode == "search_init":
-            bot.edit_message_text(l['txt_search'], chat_id, message_id)
-            os.rename(file_name, f"audio_{chat_id}.mp3")
-            user_status[chat_id] = "search_keyword"
-            return
             
         bot.delete_message(chat_id, message_id)
         
@@ -399,7 +353,7 @@ def execute_processing(chat_id, message_id, file_id, mode, file_name, extra_data
         if video_clip: video_clip.close()
         if audio_clip: audio_clip.close()
         if final_clip: final_clip.close()
-        if os.path.exists(file_name) and mode != "search_init": os.remove(file_name)
+        if os.path.exists(file_name): os.remove(file_name)
 
 print("🚀 Ready!")
 bot.infinity_polling()
