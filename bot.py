@@ -7,10 +7,11 @@ import queue
 import threading
 import time
 import psutil
+from flask import Flask
 from telebot import types
 from moviepy import VideoFileClip, AudioFileClip
 
-BOT_TOKEN = "8817595725:AAGkTZCRji9zLUvtmcpwooT-7b9BUURZG5Q"
+BOT_TOKEN = "8817595725:AAHJaK-h187XPh51ToF_20oTIQ_nkzV2mgQ"
 ADMIN_ID = 8084323446
 
 bot = telebot.TeleBot(BOT_TOKEN)
@@ -299,7 +300,6 @@ def execute_processing(chat_id, message_id, file_id, mode, file_name, extra_data
     try:
         if mode == "link_download":
             bot.edit_message_text(l['txt_link'], chat_id, message_id)
-            ydl_opts = {'outtmpl': file_name, 'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best', 'quiet': True}
             with subprocess.Popen(f"yt-dlp {file_id} -o {file_name} --merge-output-format mp4", shell=True) as proc: proc.wait()
             mode = "video"
         else:
@@ -355,5 +355,19 @@ def execute_processing(chat_id, message_id, file_id, mode, file_name, extra_data
         if final_clip: final_clip.close()
         if os.path.exists(file_name): os.remove(file_name)
 
-print("🚀 Ready!")
-bot.infinity_polling()
+
+app = Flask(__name__)
+
+@app.route('/')
+def health_check():
+    return "Bot is alive and running ✅", 200
+
+def run_flask_server():
+    app.run(host="0.0.0.0", port=8000)
+
+if __name__ == "__main__":
+    flask_thread = threading.Thread(target=run_flask_server, daemon=True)
+    flask_thread.start()
+
+    print("🚀 Ready!")
+    bot.infinity_polling()
