@@ -1,9 +1,3 @@
-pyTelegramBotAPI
-demucs
-moviepy
-pillow
-yt-dlp
-openai-whisper
-psutil
-flask
-yt-dlp @ git+https://github.com/yt-dlp/yt-dlp.git
+pyTelegramBotAPI>=4.14.0
+yt-dlp>=2024.1.0
+Flask>=3.0.0
