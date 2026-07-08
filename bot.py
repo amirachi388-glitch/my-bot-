@@ -7,12 +7,11 @@ import queue
 import threading
 import time
 import psutil
-#import whisper
 from telebot import types
 from moviepy import VideoFileClip, AudioFileClip
 
-BOT_TOKEN = "8817595725:AAHJaK-hl87XPh51ToF_20oTIQ_nkzV2mgQ"
-ADMIN_ID = 8084323446  
+BOT_TOKEN = "8817595725:AAHJaK-h187XPh51ToF_20oTIQ_nkzV2mgQ"
+ADMIN_ID = 8084323446
 
 bot = telebot.TeleBot(BOT_TOKEN)
 
