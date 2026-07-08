@@ -5,3 +5,4 @@ pillow
 yt-dlp
 openai-whisper
 psutil
+flask
