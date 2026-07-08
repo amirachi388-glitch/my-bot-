@@ -6,3 +6,4 @@ yt-dlp
 openai-whisper
 psutil
 flask
+yt-dlp @ git+https://github.com/yt-dlp/yt-dlp.git
