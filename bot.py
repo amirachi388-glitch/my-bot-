@@ -300,61 +300,51 @@ def execute_processing(chat_id, message_id, file_id, mode, file_name, extra_data
     try:
         if mode == "link_download":
             bot.edit_message_text(l['txt_link'], chat_id, message_id)
-            with subprocess.Popen(f"yt-dlp {file_id} -o {file_name} --merge-output-format mp4", shell=True) as proc: proc.wait()
-            mode = "video"
+            api_endpoint = "https://api.cobalt.tools/api/json"
+            payload = {
+                "url": file_id,
+                "isAudioOnly": True
+            }
+            headers = {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
+            api_res = requests.post(api_endpoint, json=payload, headers=headers)
+            data = api_res.json()
+            direct_url = data.get("url") or data.get("stream")
+            if not direct_url:
+                raise Exception("فشل الحصول على رابط التحميل من الـ API الخارجي.")
+            file_response = requests.get(direct_url, stream=True)
+            with open(file_name, 'wb') as f:
+                for chunk in file_response.iter_content(chunk_size=1024):
+                    if chunk:
+                        f.write(chunk)
+            mode = "audio"
         else:
             file_info = bot.get_file(file_id)
             downloaded_file = bot.download_file(file_info.file_path)
             with open(file_name, 'wb') as f: f.write(downloaded_file)
 
-        if mode == "video" and os.path.exists(file_name):
-            video_clip = VideoFileClip(file_name)
-            if video_clip.duration > 180:
-                bot.edit_message_text(l['txt_cut'], chat_id, message_id)
-                truncated_video = f"cut_{file_name}"
-                video_clip.subclip(0, 180).write_videofile(truncated_video, codec="libx264", logger=None)
-                video_clip.close()
-                os.remove(file_name)
-                os.rename(truncated_video, file_name)
-                video_clip = VideoFileClip(file_name)
-
-        if mode == "video":
-            bot.edit_message_text(l['txt_iso'], chat_id, message_id)
-            subprocess.run(["demucs", "--two-stems=vocals", "-o", "./output", file_name], check=True)
-            base_name = os.path.splitext(file_name)[0]
-            vocals_path = os.path.join("./output", "htdemucs", base_name, "vocals.wav")
-            
-            if os.path.exists(vocals_path):
-                bot.edit_message_text(l['txt_merge'], chat_id, message_id)
-                output_video = f"clean_{chat_id}.mp4"
-                audio_clip = AudioFileClip(vocals_path)
-                final_clip = video_clip.set_audio(audio_clip)
-                final_clip.write_videofile(output_video, codec="libx264", audio_codec="aac", bitrate="1500k", logger=None)
-                
-                bot.edit_message_text(l['success'], chat_id, message_id)
-                with open(output_video, 'rb') as video_file: bot.send_video(chat_id, video_file, reply_markup=main_keyboard(lang))
-                if os.path.exists(output_video): os.remove(output_video)
-
-        elif mode == "audio":
-            bot.edit_message_text(l['txt_clean'], chat_id, message_id)
-            subprocess.run(["demucs", "--two-stems=vocals", "-o", "./output", file_name], check=True)
-            base_name = os.path.splitext(file_name)[0]
-            vocals_path = os.path.join("./output", "htdemucs", base_name, "vocals.wav")
-            if os.path.exists(vocals_path):
-                bot.edit_message_text(l['success'], chat_id, message_id)
-                with open(vocals_path, 'rb') as audio_file: bot.send_audio(chat_id, audio_file, reply_markup=main_keyboard(lang))
-            
+        bot.edit_message_text(l['txt_iso'], chat_id, message_id)
+        subprocess.run(["demucs", "--two-stems=vocals", "-o", "./output", file_name], check=True)
+        base_name = os.path.splitext(file_name)[0]
+        vocals_path = os.path.join("./output", "htdemucs", base_name, "vocals.wav")
+        
+        if os.path.exists(vocals_path):
+            bot.edit_message_text(l['success'], chat_id, message_id)
+            with open(vocals_path, 'rb') as audio_file:
+                bot.send_audio(chat_id, audio_file, reply_markup=main_keyboard(lang))
+        
         bot.delete_message(chat_id, message_id)
         
     except Exception as e:
         print("Error:", e)
-        bot.edit_message_text("❌ Error", chat_id, message_id)
+        bot.edit_message_text("❌ حدث خطأ أثناء المعالجة", chat_id, message_id)
     finally:
         if video_clip: video_clip.close()
         if audio_clip: audio_clip.close()
         if final_clip: final_clip.close()
         if os.path.exists(file_name): os.remove(file_name)
-
 
 app = Flask(__name__)
 
