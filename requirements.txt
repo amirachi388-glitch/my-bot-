@@ -1,0 +1,8 @@
+pyTelegramBotAPI
+demucs
+moviepy
+pillow
+yt-dlp
+openai-whisper
+psutil
+flask
